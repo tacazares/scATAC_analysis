@@ -50,7 +50,7 @@ Tn5 IS         █                █
 Slop 20bp    █████            █████
 ```
 
-The 3 entries from the original fragments file are reported below:
+Below are 3 entries from the fragments file HEK293T cells:
 
 ```bash
 $ head -n 3 fragments_Granja2021_293T.bed
@@ -75,3 +75,47 @@ chr1	181609  181610	GTTATTCAGTCGGGAT-1	1
 
 The python script [fragmentsToTn5.py](../scripts/scATAC_fragments_tsv_to_tn5_bed.py) will perform the fragment splitting and can be found in the [scripts](../scripts/) directory.
 
+I window the cut sites using bedtools slop:
+
+```bash
+bedtools slop -i {cut_sites} -g hg38.chrom.sizes -b 20 > windows_cut_sites.bed
+```
+
+```bash
+chr1	10295	10336	TCAGGGCCACTAAACC-1
+chr1	49457	49498	CACTGAATCTATCTAC-1
+chr1	181099	181140	GTTATTCAGTCGGGAT-1
+```
+
+## Convert Tn5 sites to coverage tracks
+
+The next step is to convert the Tn5 cut sites into a coverage track that is scaled to the number of insertion sites.
+
+We first need to calculate the scaling factor that will be used with `bedtools genomecov`. The calculation is broken up, so you can easily see how each number was derived.
+
+```bash
+# Count the number of fragments or entries
+frag_count=$(cat ${file} | wc -l)
+
+# Divide 1 by the fragment count
+reads_factor=$(bc -l <<< "1/${frag_count}")
+
+# Multiply by the scaling factor
+rpm_factor=$(bc -l <<< "${reads_factor} * 1000000")
+```
+
+Then use `bedtools genomecov`:
+
+```bash
+bedtools genomecov -i - -g hg38.chrom.sizes -bg -scale ${rpm_factor} > ${bedgraph_file}
+```
+
+A bedgraph only shows the # of bed intervals at each position. You will lose the UMI information and any meta data when making a bedgraph or bigwig.
+
+```bash
+chr1	10295	10336	0.0380242
+chr1	10510	10551	0.0380242
+chr1	49457	49498	0.0380242
+```
+
+Once you have a [bedgraph](https://genome.ucsc.edu/goldenpath/help/bedgraph.html) file that contains the genome coverage information, you can compress it to a [bigwig](https://genome.ucsc.edu/goldenPath/help/bigWig.html) to save space and increase speed when loading/transferring.

@@ -84,20 +84,20 @@ def convert_fragments_to_tn5_bed(fragments_tsv, chroms, split=False):
     df_ends = df[["chr", "stop", "barcode"]].copy()
     
     # Add a 1 to create 1 bp intervals representing the cut site
-    df_starts["stop"] = df_starts["start"] + 1
+    df_starts["stop"] = df_starts["start"].copy() + 1
     
     # Subtract a 1 bp interval to represent the cut site. Reference miralidlab wiki page for scATAC-seq analysis
-    df_ends["start"] = df_ends["stop"] - 1
+    df_ends["start"] = df_ends["stop"].copy() - 1
         
     if split:
         # If split is True, return two dataframes, one for each end of the fragment    
-        return df_starts, df_ends
+        return df_starts[["chr", "start", "stop", "barcode"]], df_ends[["chr", "start", "stop", "barcode"]]
     
     else:
         # Concatenate both dataframes        
         df_cat = pd.concat([df_starts, df_ends])
 
-        return df_cat
+        return df_cat[["chr", "start", "stop", "barcode"]]
 
 ###-Constants-###
 ALL_CHRS = [

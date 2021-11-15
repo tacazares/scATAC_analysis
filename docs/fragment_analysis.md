@@ -87,6 +87,18 @@ chr1	49457	49498	CACTGAATCTATCTAC-1
 chr1	181099	181140	GTTATTCAGTCGGGAT-1
 ```
 
+### Table of Counts
+
+|          File         | Tn5_cut_sites | Fragments |
+|:---------------------:|---------------|:---------:|
+| GM12878_IS_slop20.bed | 17,966,182      | 8,983,091   |
+| HEK293T_IS_slop20.bed | 26,299,054      | 13,149,527  |
+| HeLa_IS_slop20.bed    | 18,727,198      | 9,363,599   |
+| Jurkat_IS_slop20.bed  | 20,076,486      | 10,038,243  |
+| K562_IS_slop20.bed    | 11,436,140      | 5,718,070   |
+| MCF-7_IS_slop20.bed   | 4,346,222       | 2,173,111   |
+| THP-1_IS_slop20.bed   | 7,500,868       | 3,750,434   |
+
 ## Convert Tn5 sites to coverage tracks
 
 The next step is to convert the Tn5 cut sites into a coverage track that is scaled to the number of insertion sites.
@@ -118,4 +130,8 @@ chr1	10510	10551	0.0380242
 chr1	49457	49498	0.0380242
 ```
 
-Once you have a [bedgraph](https://genome.ucsc.edu/goldenpath/help/bedgraph.html) file that contains the genome coverage information, you can compress it to a [bigwig](https://genome.ucsc.edu/goldenPath/help/bigWig.html) to save space and increase speed when loading/transferring.
+Once you have a [bedgraph](https://genome.ucsc.edu/goldenpath/help/bedgraph.html) file that contains the genome coverage information, you can compress it to a [bigwig](https://genome.ucsc.edu/goldenPath/help/bigWig.html) to save space and increase speed when loading/transferring. Use [bedGraphToBigWig](https://anaconda.org/bioconda/ucsc-bedgraphtobigwig) for quick conversion. Below is an example of how to convert a bedgraph file to bigwig.
+
+```bash
+bedGraphToBigWig {bedgraph_file} {chrom_sizes} {bigwig_file}
+```

@@ -7,7 +7,7 @@ This section covers analysis of pseudo-bulk level scATAC-seq data.
 
 ## Fragment Files
 
-The [scATAC-seq fragment files](https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/fragments) are like bed files, but with a `.tsv` extension.
+The [scATAC-seq fragment files](https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/output/fragments) are like bed files, but with a `.tsv` extension. The fragment files are representative of paired end sequencing reads.
 
 ### Example Fragment File
 
@@ -36,7 +36,7 @@ chr1	181405	181453	CAACGTAGTAGCGGTA-1	1
 
 ### Tn5 specific correction
 
-The fragments have been adjusted for the 9bp overhang created by Tn5 transposition so the ends are representative of the Tn5 cut sites. My analysis is primarily interested in inferring the exact Tn5 site that was bound, so we will convert the paired-end sequencing fragments to Tn5 sites.
+The fragments have been adjusted for the 9bp overhang created by Tn5 transposition, so the ends of each fragment are representative of the Tn5 cut sites. My analysis is primarily interested in inferring the exact Tn5 site that was bound, so we will convert the paired-end sequencing fragments to Tn5 sites.
 
 This analysis uses 10 cell types that were used in the [ArchR](https://www.nature.com/articles/s41588-021-00790-6) paper. Each cluster of cells was identified and extracted as individual files containing the fragments associated with each cell type.
 
@@ -75,7 +75,7 @@ chr1	181609  181610	GTTATTCAGTCGGGAT-1	1
 
 The python script [fragmentsToTn5.py](../scripts/scATAC_fragments_tsv_to_tn5_bed.py) will perform the fragment splitting and can be found in the [scripts](../scripts/) directory.
 
-I window the cut sites using bedtools slop:
+I window the cut sites using `bedtools slop`:
 
 ```bash
 bedtools slop -i {cut_sites} -g hg38.chrom.sizes -b 20 > windows_cut_sites.bed
@@ -89,15 +89,15 @@ chr1	181099	181140	GTTATTCAGTCGGGAT-1
 
 ### Table of Counts
 
-|          File         | Tn5_cut_sites | Fragments |
-|:---------------------:|---------------|:---------:|
-| GM12878_IS_slop20.bed | 17,966,182      | 8,983,091   |
-| HEK293T_IS_slop20.bed | 26,299,054      | 13,149,527  |
-| HeLa_IS_slop20.bed    | 18,727,198      | 9,363,599   |
-| Jurkat_IS_slop20.bed  | 20,076,486      | 10,038,243  |
-| K562_IS_slop20.bed    | 11,436,140      | 5,718,070   |
-| MCF-7_IS_slop20.bed   | 4,346,222       | 2,173,111   |
-| THP-1_IS_slop20.bed   | 7,500,868       | 3,750,434   |
+| Cell Type | Tn5 Cut Sites | Fragments | Barcode Count |
+|:---------:|---------------|:---------:|---------------|
+| HEK293T   | 26,299,054      | 13,149,527  | 1,756          |
+| Jurkat    | 20,076,486      | 10,038,243  | 1,670          |
+| HeLa      | 18,727,198      | 9,363,599   | 2,385          |
+| GM12878   | 17,966,182      | 8,983,091   | 1,291          |
+| K562      | 11,436,140      | 5,718,070   | 1,494          |
+| THP-1     | 7,500,868       | 3,750,434   | 1,059          |
+| MCF-7     | 4,346,222       | 2,173,111   | 1,208          |
 
 ## Convert Tn5 sites to coverage tracks
 

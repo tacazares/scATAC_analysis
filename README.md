@@ -13,6 +13,8 @@ ___
 
 ## Important Resources
 
+[10X scATAC Paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7299161/#SD2)
+
 [How do you convert a BAM file you found on GEO to the fastq for realignment?](https://support.10xgenomics.com/docs/bamtofastq#header)
 
 [How do you name the Input FASTQ files for 10x pipelines that you downloaded from the internet?](https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/using/fastq-input)

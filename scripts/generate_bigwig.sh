@@ -3,31 +3,35 @@
 ########################################################################
 
 ###### INPUTS ######
+slop_file=${1}
 output_dir=${2}
-mapped_reads=${3}
-blacklist_bed=${4}
-chrom_sizes=${5}
+blacklist_bed=${3}
+chrom_sizes=${4}
 
-insertion_sites
+echo ${slop_file} ${output_dir} ${blacklist_bed} ${chrom_sizes}
+
+###### Parameters ######
+
+# Set up output file names
 bedgraph_file=`basename ${slop_file} .bed`.bg
-bigwig_file=`basename ${bedgraph_file} .bg`.bw
+bigwig_file=`basename ${slop_file} .bed`.bw
 
-###### WORKFLOW ######
 echo "Making directory " ${output_dir}
 mkdir -p ${output_dir}
 cd ${output_dir}
 
-echo "Calculate scaling factors for genome coverage with bedtools"
+###### WORKFLOW ######
+echo "Calculate scaling factors for genome coverage"
+read_count=$(wc -l < ${slop_file})
+
 # Generate bedgraph of cutsite coverage and normalize to sequencing depth
-reads_factor=$(bc -l <<< "1/${mapped_reads}")
+reads_factor=$(bc -l <<< "1/${read_count}")
 rpm_factor=$(bc -l <<< "${reads_factor} * 1000000")
-bedgraph_file=`basename ${slop_file} .bed`.bg
-out_filename_bw=`basename ${slop_file} .bed`.bw
 
 echo "Scaling factor " ${rpm_factor}
 
 echo "Generate coverage track that is RPM normalized"
-bedtools intersect -a ${output_dir}/${slop_file} -b ${blacklist_bed} -v | \
+bedtools intersect -a ${slop_file} -b ${blacklist_bed} -v | \
 bedtools sort | \
 bedtools genomecov -i - -g ${chrom_sizes} -bg -scale ${rpm_factor} > \
 ${output_dir}/${bedgraph_file}

@@ -155,6 +155,23 @@ We can call peaks for areas of enriched chromatin accessibility using the Tn5 cu
 macs2 callpeaks -t {tn5_bed} --extsize 40 -f BED --name {output_name} --nomodel --keep-dup all -g hs -B --SPMR
 ```
 
+## Generate an indexed fragments file for input to Seurat, Sinto, Signac....
+
+This information was directly copied from the site for [Sinto](https://timoast.github.io/sinto/scatac.html).
+
+```bash
+# sort, compress, and index
+sort -k1,1 -k2,2n fragments.bed > fragments.sort.bed
+bgzip -@ 8 fragments.sort.bed
+tabix -p bed fragments.sort.bed.gz
+
+# clean up
+rm fragments.bed
+
+# take a look at the output
+gzip -dc fragments.sort.bed.gz | head
+```
+
 ## UMAP of scATAC-seq Tn5 cut site peaks
 
 We can generate a union or oracle peak set from the peaks that we call individually on each cell type. 

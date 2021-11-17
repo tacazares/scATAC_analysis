@@ -26,4 +26,4 @@ echo "Blacklist BED file: " ${blacklist_bed}
 echo "Chromosome sizes file: " ${chrom_sizes} 
 echo "Slop size: " ${slop_size}
 
-bedtools intersect -a ${bed_file} -b ${blacklist_bed} -v | bedtools slop -i - -g ${chrom_sizes} -b ${slop_size} | bedtools sort | pigz > ${slop_file}
+bedtools intersect -a ${bed_file} -b ${blacklist_bed} -v | bedtools slop -i - -g ${chrom_sizes} -b ${slop_size} | sort -k 1,1 -k2,2n | pigz > ${slop_file}

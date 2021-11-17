@@ -135,3 +135,43 @@ Once you have a [bedgraph](https://genome.ucsc.edu/goldenpath/help/bedgraph.html
 ```bash
 bedGraphToBigWig {bedgraph_file} {chrom_sizes} {bigwig_file}
 ```
+
+## Calling peaks on Tn5 cut sites
+
+We can call peaks for areas of enriched chromatin accessibility using the Tn5 cut sites generated from the fragment files. We call peaks using [MACS2](https://github.com/macs3-project/MACS) and the bed file of Tn5 cut sites.
+
+### MACS2 parameters
+
+`--extsize 40` Slop size to extend intervals from the left most side
+`-f BED` Input is BED format
+`--nomodel` Use ext size above
+`--keep-dup all` Keep all duplicates
+`-B` Saves the bedgraph
+`--SPMR` Normalizes the signal to number of reads in the file
+
+### Example MACS2 code
+
+```bash
+macs2 callpeaks -t {tn5_bed} --extsize 40 -f BED --name {output_name} --nomodel --keep-dup all -g hs -B --SPMR
+```
+
+## UMAP of scATAC-seq Tn5 cut site peaks
+
+We can generate a union or oracle peak set from the peaks that we call individually on each cell type. 
+
+You can combine the peaks using `bedtools`, `cat`, and `cut`.
+
+```bash
+cat ./Granja_2021_scatac/peaks/*bed | cut -f1,2,3 | bedtools sort | bedtools merge > Granja_2021_union_peaks.bed
+```
+
+### Generate Counts Matrix
+
+We will generate the Tn5 counts matrix by intersecting the oracle peak set with each of the sample Tn5 cut sites. This will give us a count of Tn5 sites per peak for each of the cell types.
+
+```bash
+for file in /Users/caz3so/scratch/20210831_maxATAC_scATAC/data/hg38/tn5_slop20/*gz;
+do
+bedtools intersect -a Granja_2021_7CellTypes_union_peaks.bed -b ${file} -c > /Users/caz3so/scratch/20210831_maxATAC_scATAC/outputs/hg38/umap/counts/`basename ${file} _IS_slop20.bed.gz`_counts.bed
+done
+```

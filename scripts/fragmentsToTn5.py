@@ -110,8 +110,8 @@ ALL_CHRS = [
 ###-Workflow-###
 if args.SPLIT == True:
     # Create file names
-    output_file_start = os.path.join(args.OUT_DIR, args.NAME + "_start.bed")
-    output_file_stop = os.path.join(args.OUT_DIR, args.NAME + "_stop.bed")
+    output_file_start = os.path.join(args.OUT_DIR, args.NAME + "_start.bed.gz")
+    output_file_stop = os.path.join(args.OUT_DIR, args.NAME + "_stop.bed.gz")
 
     print("Splitting Fragment ends into individual files")
     
@@ -123,7 +123,7 @@ if args.SPLIT == True:
 
 else:
     # Create file names
-    output_file = os.path.join(args.OUT_DIR, args.NAME + ".bed")
+    output_file = os.path.join(args.OUT_DIR, args.NAME + ".bed.gz")
     print("Splitting Fragment ends into a new BED file: " + output_file)
 
     tn5_bed = convert_fragments_to_tn5_bed(args.FRAGMENTS, ALL_CHRS)

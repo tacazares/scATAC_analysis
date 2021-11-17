@@ -13,8 +13,8 @@ echo ${slop_file} ${output_dir} ${blacklist_bed} ${chrom_sizes}
 ###### Parameters ######
 
 # Set up output file names
-bedgraph_file=`basename ${slop_file} .bed`.bg
-bigwig_file=`basename ${slop_file} .bed`.bw
+bedgraph_file=`basename ${slop_file} .bed.gz`.bg
+bigwig_file=`basename ${slop_file} .bed.gz`.bw
 
 echo "Making directory " ${output_dir}
 mkdir -p ${output_dir}
@@ -22,7 +22,7 @@ cd ${output_dir}
 
 ###### WORKFLOW ######
 echo "Calculate scaling factors for genome coverage"
-read_count=$(wc -l < ${slop_file})
+read_count=$(gunzip -c ${slop_file} | wc -l)
 
 # Generate bedgraph of cutsite coverage and normalize to sequencing depth
 reads_factor=$(bc -l <<< "1/${read_count}")

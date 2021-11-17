@@ -7,10 +7,9 @@
 ###### INPUTS ######
 bed_file=${1}
 output_dir=${2}
-blacklist_bed=${3}
-chrom_sizes=${4}
+chrom_sizes=${3}
 
-echo ${bed_file} ${output_dir} ${blacklist_bed} ${chrom_sizes}
+echo ${bed_file} ${output_dir} ${chrom_sizes}
 
 ###### Parameters ######
 
@@ -32,9 +31,6 @@ rpm_factor=$(bc -l <<< "${reads_factor} * 1000000")
 echo "Scaling factor " ${rpm_factor}
 
 echo "Generate coverage track that is RPM normalized"
-bedtools intersect -a ${bed_file} -b ${blacklist_bed} -v | \
-bedtools sort | \
-bedtools genomecov -i - -g ${chrom_sizes} -bg -scale ${rpm_factor} > \
-${output_dir}/${bedgraph_file}
+bedtools genomecov -i ${bed_file} -g ${chrom_sizes} -bg -scale ${rpm_factor} > ${output_dir}/${bedgraph_file}
 
 echo "Done!"

@@ -1,0 +1,15 @@
+# FASTQ directory
+input_dir: ./inputs
+output_dir: ./outputs
+
+# Path to a TSV file with samples and their corresponding FASTQ files.
+SAMPLES_TSV: './samples.tsv'
+
+# Path to reference chromosome sizes file
+reference_chrom_sizes: "./genome_inf/hg38.22XY.chrom.sizes"
+
+# Path to blacklisted regions file
+blacklist: "./genome_inf/hg38_maxatac_blacklist_merged.bed"
+
+# Slop size to use around the Tn5 insertion sites
+slop: 20

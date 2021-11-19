@@ -164,12 +164,6 @@ This information was directly copied from the site for [Sinto](https://timoast.g
 sort -k1,1 -k2,2n fragments.bed > fragments.sort.bed
 bgzip -@ 8 fragments.sort.bed
 tabix -p bed fragments.sort.bed.gz
-
-# clean up
-rm fragments.bed
-
-# take a look at the output
-gzip -dc fragments.sort.bed.gz | head
 ```
 
 ## UMAP of scATAC-seq Tn5 cut site peaks

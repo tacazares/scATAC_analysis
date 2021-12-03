@@ -180,9 +180,28 @@ cat ./Granja_2021_scatac/peaks/*bed | cut -f1,2,3 | bedtools sort | bedtools mer
 
 We will generate the Tn5 counts matrix by intersecting the oracle peak set with each of the sample Tn5 cut sites. This will give us a count of Tn5 sites per peak for each of the cell types.
 
+#### Make a reference peak set
+
+You can make a reference peak set by concatenating all the BED files together, sorting, and merging the files with bedtools. 
+
 ```bash
 for file in /Users/caz3so/scratch/20210831_maxATAC_scATAC/data/hg38/tn5_slop20/*gz;
 do
 bedtools intersect -a Granja_2021_7CellTypes_union_peaks.bed -b ${file} -c > /Users/caz3so/scratch/20210831_maxATAC_scATAC/outputs/hg38/umap/counts/`basename ${file} _IS_slop20.bed.gz`_counts.bed
 done
+```
+
+#### Intersect reference peaks with cut sites
+
+We will use `bedtools` to find the overlap between the insertion sites and each of the ATAC-seq reference peaks. We can use `bedtools` to perform the intersection and write the full entries for both with `-wa` and `-wb`. The overlapping intervals are then piped into `bedtools groupby`, which will group the first three columns and get the frequency of the unique entries in the cells ID column. Finally, the output is compressed with pigz.
+
+```bash
+bedtools intersect -a reference_peaks.bed.gz -b scATAC_cut_sites.bed -wa -wb | bedtools groupby -i - -c 7 -o freqasc | pigz > peak_counts.bed.gz
+```
+
+The output file looks like the following:
+
+```bash
+chr start   stop    cells:counts
+chr1	10543	10633	ACAGCGCAGCTACGTT-1:1,CTGGGACTCTCTGTTA-1:1,AGTCCGGCACAATAAG-1:2,CTTCTAACAGGATGTG-1:2
 ```

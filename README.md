@@ -39,4 +39,6 @@ Each section broadly cover different aspects of scATAC-seq data analysis, some m
 
 ### III. Quality Control
 
-### IIII. [Pseudo-bulk Fragment Analysis](docs/fragment_analysis.md)
+### IV. [Pseudo-bulk Fragment Analysis](docs/fragment_analysis.md)
+
+### V. [ChromVar Analysis](docs/chroVar.md)
